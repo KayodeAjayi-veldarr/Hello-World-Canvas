@@ -1,11 +1,11 @@
 {
-  "project_key": "your-project-key",
-  "solution_name": "YourSolutionName",
+  "project_key": "hello-world-canvas",
+  "solution_name": "HelloWorld",
   "default_solution_folder": "power-platform-solution",
-  "default_developer_alias": "maker",
-  "default_developer_upn": "maker@example.com",
+  "default_developer_alias": "kayode",
+  "default_developer_upn": "kayode.ajayi@veldarr.com",
   "base_branch": "main",
-  "target_region": "europe",
+  "target_region": "unitedkingdom",
   "target_currency": "GBP",
   "target_language": "English",
   "checker_geo": "UnitedKingdom",
@@ -19,6 +19,6 @@
   "validation_security_group_id": "",
   "automation_role": "System Administrator",
   "developer_role": "System Administrator",
-  "azure_devops_organisation": "",
-  "azure_devops_project": ""
+  "azure_devops_organisation": "VeldarrProjects",
+  "azure_devops_project": "Hello World Canvas"
 }
