@@ -1,0 +1,75 @@
+POWER PLATFORM PROJECT REPOSITORY SETTINGS
+==========================================
+
+Use this checklist after creating a repository from the template.
+
+1. GitHub Actions
+-----------------
+
+Open:
+
+    Settings > Actions > General
+
+Set:
+
+    Actions permissions: enabled for this repository
+    Workflow permissions: Read and write permissions
+    Allow GitHub Actions to create and approve pull requests: enabled
+
+If your organisation restricts Actions, allow:
+
+    actions/checkout@v4
+    actions/upload-artifact@v4
+    microsoft/powerplatform-actions/actions-install@v1
+    local reusable workflows in .github/workflows
+
+2. Secrets
+----------
+
+Grant the repository access to these Actions secrets:
+
+    PP_TENANT_ID
+    PP_APP_ID
+    PP_CLIENT_SECRET
+
+Do not add project-level Actions variables for the standard setup.
+Do not add Azure DevOps secrets for Azure Boards linking.
+
+3. Power Platform Access
+------------------------
+
+The Entra app behind the `PP_*` secrets needs:
+
+    Access to each required Power Platform environment
+    Application user setup where Dataverse access is required
+    Dataverse security role for solution import/export
+    Admin permission if workflows will create or delete environments
+
+4. Project Config
+-----------------
+
+Update:
+
+    .github/power-platform-project.json
+
+Set the project key, solution name, solution folder, base branch, and default maker details.
+
+5. Optional Azure Boards Linking
+--------------------------------
+
+Install/connect the Azure Boards GitHub app for the repository.
+Then use `AB#<work-item-id>` references in commit messages or pull request text.
+No Azure DevOps PAT is needed.
+
+6. Final Check
+--------------
+
+    [ ] Actions enabled
+    [ ] Workflow permissions set to read/write
+    [ ] Actions can create pull requests
+    [ ] Repository can access PP_TENANT_ID
+    [ ] Repository can access PP_APP_ID
+    [ ] Repository can access PP_CLIENT_SECRET
+    [ ] .github/power-platform-project.json updated
+    [ ] Entra app can access the required Power Platform environments
+    [ ] Azure Boards GitHub app connected, if work item linking is needed
