@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <CanvasApp xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Name>vls_helloworld_830cb</Name>
-  <AppVersion>2026-09-06T22:42:46Z</AppVersion>
+  <AppVersion>2026-09-07T09:58:12Z</AppVersion>
   <Status>Ready</Status>
   <CreatedByClientVersion>3.26084.7.0</CreatedByClientVersion>
   <MinClientVersion>3.26084.7.0</MinClientVersion>
@@ -10,8 +10,8 @@
   <GalleryItemId xsi:nil="true"></GalleryItemId>
   <BackgroundColor>RGBA(0,176,240,1)</BackgroundColor>
   <DisplayName>Hello World</DisplayName>
-  <Description xsi:nil="true"></Description>
-  <CommitMessage xsi:nil="true"></CommitMessage>
+  <Description></Description>
+  <CommitMessage></CommitMessage>
   <Publisher></Publisher>
   <AuthorizationReferences>[]</AuthorizationReferences>
   <ConnectionReferences>{}</ConnectionReferences>
@@ -21,7 +21,6 @@
   <CanConsumeAppPass>1</CanConsumeAppPass>
   <CanvasAppType>0</CanvasAppType>
   <BypassConsent>0</BypassConsent>
-  <AdminControlBypassConsent>0</AdminControlBypassConsent>
   <EmbeddedApp xsi:nil="true"></EmbeddedApp>
   <IntroducedVersion>1.0</IntroducedVersion>
   <CdsDependencies>{"cdsdependencies":[]}</CdsDependencies>
