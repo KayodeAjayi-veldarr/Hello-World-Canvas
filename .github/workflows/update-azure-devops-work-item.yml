@@ -149,10 +149,36 @@ jobs:
             catch {
               $message = $_.Exception.Message
               $response = $_.Exception.Response
-              if ($null -ne $response -and $null -ne $response.GetResponseStream()) {
+              if ($null -ne $response) {
                 try {
-                  $reader = [System.IO.StreamReader]::new($response.GetResponseStream())
-                  $details = $reader.ReadToEnd()
+                  $status = ""
+                  if ($null -ne $response.PSObject.Properties["StatusCode"]) {
+                    $status = "Status: $([int]$response.StatusCode) $($response.StatusCode)"
+                  }
+
+                  $details = ""
+                  if ($response -is [System.Net.Http.HttpResponseMessage]) {
+                    if (-not [string]::IsNullOrWhiteSpace($response.ReasonPhrase)) {
+                      $status = "Status: $([int]$response.StatusCode) $($response.ReasonPhrase)"
+                    }
+                    if ($null -ne $response.Content) {
+                      $details = $response.Content.ReadAsStringAsync().GetAwaiter().GetResult()
+                    }
+                  }
+                  elseif ($null -ne $response.PSObject.Methods["GetResponseStream"]) {
+                    $stream = $response.GetResponseStream()
+                    if ($null -ne $stream) {
+                      $reader = [System.IO.StreamReader]::new($stream)
+                      try {
+                        $details = $reader.ReadToEnd()
+                      }
+                      finally {
+                        $reader.Dispose()
+                      }
+                    }
+                  }
+
+                  if (-not [string]::IsNullOrWhiteSpace($status)) { $message = "$message $status" }
                   if (-not [string]::IsNullOrWhiteSpace($details)) { $message = "$message $details" }
                 }
                 catch {}
