@@ -13,6 +13,7 @@ Create a repository from this template, update one project config file, add the 
 - Managed build and deployment workflow
 - Release notes generated from merged commits, pull requests, and `AB#` work item references
 - Optional Azure Boards linking with `AB#` work item references
+- Optional Azure DevOps work item discussion, state, assignment, tag, and GitHub PR/commit updates
 
 A repository created from this template does not need access to the original template repository. The numbered project workflows call reusable workflows stored in the same repository.
 
@@ -24,7 +25,7 @@ A repository created from this template does not need access to the original tem
    - `PP_TENANT_ID`
    - `PP_APP_ID`
    - `PP_CLIENT_SECRET`
-4. Optional: add `AZURE_DEVOPS_PAT` if **5. Generate Release Notes** should read Azure Boards work item title, type, and state.
+4. Optional: add `AZURE_DEVOPS_PAT` if **5. Generate Release Notes** should read Azure Boards work item title, type, and state, or if **6. Update Azure DevOps Work Item** should update work items.
 5. In GitHub, open `Settings > Actions > General`.
 6. Set workflow permissions to `Read and write permissions`.
 7. Enable `Allow GitHub Actions to create and approve pull requests`.
@@ -75,6 +76,7 @@ Run the numbered workflows. The `Internal - Reusable ...` workflows are implemen
 | **3. Validate Power Platform Pull Request** | Automatically on PRs to `main`, or manually before review. | Temporary validation import, optional Solution Checker results, and artifacts. |
 | **4. Build and Deploy Solution** | After PR approval/merge when releasing to test, UAT, or production. | Release ZIP built from source, stored artifact, optional committed ZIP, and target import. |
 | **5. Generate Release Notes** | When preparing or documenting a release. | Markdown release notes from commits, PRs, and Azure Boards references. |
+| **6. Update Azure DevOps Work Item** | After feature work, PR review, validation, or milestones when one targeted Azure Boards item needs an update. | One non-empty Azure DevOps JSON Patch update for discussion, state, assignment, tags, and optional GitHub links. |
 
 ## Workflow 1: Manage Power Platform Development Environment
 
@@ -215,6 +217,39 @@ Outputs to look for:
 - Optional committed file under `release-notes`
 - Work items flagged when their verified state is not `Resolved`, `Closed`, or `Done`
 
+## Workflow 6: Update Azure DevOps Work Item
+
+Use this sparingly after feature work or a milestone when a single Azure Boards work item needs a clear update. It supports manual runs and can also be called from another workflow.
+
+| Input | What to enter |
+| --- | --- |
+| `work_item_id` | Required numeric Azure Boards work item ID. |
+| `azure_devops_organisation` | Optional organisation. Blank uses `azure_devops_organisation` from `.github/power-platform-project.json`. |
+| `azure_devops_project` | Optional project. Blank uses `azure_devops_project` from `.github/power-platform-project.json`. |
+| `discussion` | Optional comment/discussion text. |
+| `target_state` | Optional new state. The workflow verifies it is valid for the work item type before updating. |
+| `assigned_to` | Optional display name or email address to assign. |
+| `tags` | Optional comma or semicolon separated tags. Existing tags are preserved and only new unique tags are appended. |
+| `github_pr_url` | Optional PR URL to include in the discussion text. |
+| `github_commit_url` | Optional commit URL to include in the discussion text. |
+
+The workflow uses the repository secret `AZURE_DEVOPS_PAT` through REST API calls only. The PAT needs work item read/update permissions and is never printed. Empty runs fail clearly, and already-applied state, assignment, or tag updates are skipped without posting a no-op JSON Patch.
+
+Example reusable workflow call:
+
+```yaml
+jobs:
+  update_board:
+    uses: ./.github/workflows/project-6-update-azure-devops-work-item.yml
+    with:
+      work_item_id: "482"
+      discussion: "Validation completed successfully."
+      target_state: "Resolved"
+      github_pr_url: ${{ github.event.pull_request.html_url }}
+    secrets:
+      AZURE_DEVOPS_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
+```
+
 ## Publishing Behaviour
 
 The workflows now publish solution customisations at the points where export or unmanaged import depends on published state:
@@ -286,6 +321,7 @@ Only the numbered workflows are user-facing:
 3. Validate Power Platform Pull Request
 4. Build and Deploy Solution
 5. Generate Release Notes
+6. Update Azure DevOps Work Item
 
 Explain which workflow to run next, which inputs to fill in, which values can be left blank because they come from project config, and what output should confirm success. Do not ask for new Power Platform secrets unless the existing PP_TENANT_ID, PP_APP_ID, and PP_CLIENT_SECRET are genuinely missing or inaccessible. For release notes, use Workflow 5. If Azure DevOps work item status is needed, confirm AZURE_DEVOPS_PAT is configured; do not invent statuses.
 ```
@@ -300,3 +336,4 @@ Explain which workflow to run next, which inputs to fill in, which values can be
 - If import/export fails, confirm the Entra app exists as an application user in the relevant environments and has the required Dataverse role.
 - If Azure Boards links do not appear, confirm the Azure Boards GitHub app is connected to the repository and the commit or PR contains `AB#<id>`.
 - If release notes show `Not verified` for work item state, configure `AZURE_DEVOPS_PAT`, confirm `azure_devops_organisation` and `azure_devops_project`, then rerun **5. Generate Release Notes**.
+- If **6. Update Azure DevOps Work Item** fails, confirm `AZURE_DEVOPS_PAT` has work item read/update permissions and the requested state is valid for that work item type.
