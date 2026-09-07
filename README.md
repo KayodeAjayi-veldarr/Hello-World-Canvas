@@ -73,7 +73,7 @@ Run the numbered workflows. The `Internal - Reusable ...` workflows are implemen
 | --- | --- | --- |
 | **1. Manage Power Platform Development Environment** | At the start of a change, or when cleaning up a feature environment. | A maker-ready environment, optional baseline commit, and links in the run summary. |
 | **2. Commit Solution Changes** | After making changes in the Power Platform maker portal. | Exported solution source committed to the branch, optional PR, and solution artifact. |
-| **3. Validate Power Platform Pull Request** | Automatically on PRs to `main`, or manually before review. | Temporary validation import, optional Solution Checker results, and artifacts. |
+| **3. Validate Power Platform Pull Request** | Automatically on PRs to `main` that change solution source or project config, or manually before review. | Temporary validation import, optional Solution Checker results, and artifacts. |
 | **4. Build and Deploy Solution** | After PR approval/merge when releasing to test, UAT, or production. | Release ZIP built from source, stored artifact, optional committed ZIP, and target import. |
 | **5. Generate Release Notes** | When preparing or documenting a release. | Markdown release notes from commits, PRs, and Azure Boards references. |
 | **6. Update Azure DevOps Work Item** | After feature work, PR review, validation, or milestones when one targeted Azure Boards item needs an update. | One non-empty Azure DevOps JSON Patch update for discussion, state, assignment, tags, and optional GitHub links. |
@@ -140,7 +140,7 @@ Outputs to look for:
 
 ## Workflow 3: Validate Power Platform Pull Request
 
-This runs automatically when a PR targets `main`. You can also run it manually from Actions.
+This runs automatically when a PR targets `main` and changes solution source or `.github/power-platform-project.json`. You can also run it manually from Actions.
 
 | Input | What to enter |
 | --- | --- |
@@ -219,7 +219,7 @@ Outputs to look for:
 
 ## Workflow 6: Update Azure DevOps Work Item
 
-Use this sparingly after feature work or a milestone when a single Azure Boards work item needs a clear update. It supports manual runs and can also be called from another workflow.
+Use this sparingly after feature work or a milestone when a single Azure Boards work item needs a clear update. Run the numbered workflow manually, or call the internal reusable workflow from another workflow.
 
 | Input | What to enter |
 | --- | --- |
@@ -240,14 +240,14 @@ Example reusable workflow call:
 ```yaml
 jobs:
   update_board:
-    uses: ./.github/workflows/project-6-update-azure-devops-work-item.yml
+    uses: ./.github/workflows/update-azure-devops-work-item.yml
     with:
       work_item_id: "482"
       discussion: "Validation completed successfully."
       target_state: "Resolved"
       github_pr_url: ${{ github.event.pull_request.html_url }}
     secrets:
-      AZURE_DEVOPS_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
+      azure_devops_pat: ${{ secrets.AZURE_DEVOPS_PAT }}
 ```
 
 ## Publishing Behaviour
