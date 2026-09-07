@@ -503,8 +503,8 @@ jobs:
             )
           }
 
-          if ($domainPrefix.Length -gt 45) {
-            $domainPrefix = $domainPrefix.Substring(0, 45)
+          if ($domainPrefix.Length -gt 32) {
+            $domainPrefix = $domainPrefix.Substring(0, 32)
             $domainPrefix = $domainPrefix.Trim('-')
           }
 
