@@ -237,7 +237,7 @@ jobs:
           $workItemUrl = "$baseUri/_workitems/edit/$workItemId"
           $script:BasicToken = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(":$env:ADO_PAT"))
 
-          $workItemApi = "$baseUri/_apis/wit/workitems/$workItemId?`$expand=fields&api-version=7.1"
+          $workItemApi = "$baseUri/_apis/wit/workitems/${workItemId}?`$expand=fields&api-version=7.1"
           $workItem = Invoke-AdoRest -Method Get -Uri $workItemApi
 
           $operations = New-Object System.Collections.Generic.List[object]
@@ -324,7 +324,7 @@ jobs:
           }
 
           $patchBody = ConvertTo-Json -InputObject @($operations.ToArray()) -Depth 10 -Compress
-          $patchApi = "$baseUri/_apis/wit/workitems/$workItemId?api-version=7.1"
+          $patchApi = "$baseUri/_apis/wit/workitems/${workItemId}?api-version=7.1"
           Invoke-AdoRest -Method Patch -Uri $patchApi -Body $patchBody -ContentType "application/json-patch+json" | Out-Null
 
           $changeText = ($changes.ToArray() -join ", ")
