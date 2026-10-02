@@ -4,6 +4,8 @@ A self-contained GitHub template for Power Platform ALM.
 
 Create a repository from this template, update one project config file, add the Power Platform secrets, then use the numbered GitHub Actions workflows to manage changes from branch to deployment.
 
+For this repository's concrete solution IDs, environment URLs, Canvas app link, Azure DevOps links, branch strategy, and current status snapshot, see [Hello World Canvas solution reference](docs/solution-reference.md).
+
 ## What You Get
 
 - Short-lived change or hotfix branches from `main`
